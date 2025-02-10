@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <div class="container text-center">
+        <!-- Image ronde juste au-dessus du titre -->
+        <img src="/assets/img/logo.png" class="rounded-circle mb-4" alt="Logo" style="width: 150px; height: 150px; object-fit: cover;">
+
+        <h1 class="display-4 text-primary mb-4">Bienvenue sur Mon Site de Recettes ! 🍽️</h1>
+        <p class="lead mb-4">Découvrez des recettes du monde entier, ajoutez vos favoris et partagez vos avis.</p>
+
+        {% if not app.user %}
+            <a href="{{ path('app_login') }}" class="btn btn-lg btn-outline-primary me-3">Se connecter</a>
+            <a href="{{ path('app_register') }}" class="btn btn-lg btn-outline-secondary">Créer un compte</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-lg btn-success">Voir les recettes</a>
+        {% endif %}
+    </div>
+{% endblock %}
