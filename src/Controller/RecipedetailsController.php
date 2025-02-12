@@ -19,31 +19,61 @@ final class RecipedetailsController extends AbstractController
         $this->httpClient = $httpClient;
     }
     #[Route('/recipedetails/{id}', name: 'app_recipedetails')]
-    public function index(int $id): Response
+    public function index(Request $request, int $id): Response
     {
-        // Appel de l'API Symfony
+        $userId = $this->getUser() ? $this->getUser()->getId() : null;
+        $userEmail = $this->getUser() ? $this->getUser()->getEmail() : null;
+
+        // Appel de l'API Symfony pour récupérer la recette
         $response = $this->httpClient->request('GET', "http://127.0.0.1:8001/api/recipes/$id");
 
-        // Vérification si la requête a réussi
         if ($response->getStatusCode() !== 200) {
             throw $this->createNotFoundException('Recette non trouvée');
         }
 
-        // Décodage du JSON en tableau PHP
         $recipe = $response->toArray();
 
-        // Vérifie si la recette contient bien les ingrédients et les étapes
-        $recipe['ingredients'] = isset($recipe['ingredients']) ? implode(', ', $recipe['ingredients']) : 'Aucun ingrédient';
+        // Récupération des données du formulaire
+        if ($request->isMethod('POST')) {
+            $content = $request->request->get('content');
+            $rating = intval($request->request->get('rating')); // Récupérer la note
 
-        // Si les étapes sont déjà un tableau, on les garde telles quelles
-        if (isset($recipe['steps']) && is_array($recipe['steps'])) {
-            $steps = $recipe['steps'];
-        } else {
-            // Sépare les étapes basées sur une majuscule après un espace
-            $pattern = '/(?<=\b[A-Za-z])\s+(?=[A-Z])/';
-            $steps = isset($recipe['steps']) ? preg_split($pattern, $recipe['steps']) : ['Aucune étape'];
+            // Créer les données pour le commentaire
+            $commentData = [
+                '@context' => '/context',
+                'content' => $content,
+                'rating' => $rating,
+                'user' => $userId,
+                'recipe' => '/api/recipes/' . $id, // Lien vers la recette
+            ];
+
+            $commentJson = json_encode($commentData);
+            // dump($commentJson); // Vérifier le contenu du commentaire (JSON)
+
+            // Requête POST pour ajouter le commentaire
+            $commentResponse = $this->httpClient->request('POST', "http://127.0.0.1:8001/api/comments", [
+                'headers' => [
+                    'Content-Type' => 'application/ld+json',
+                ],
+                'body' => $commentJson,
+            ]);
+
+            // Si le commentaire est ajouté avec succès
+            if ($commentResponse->getStatusCode() === 201) {
+                // Redirige vers la même page pour afficher le commentaire ajouté
+                return $this->redirectToRoute('app_recipedetails', ['id' => $id]);
+            }
+
+            // Si la requête de commentaire échoue
+            $this->addFlash('error', 'Erreur lors de l\'ajout du commentaire.');
         }
 
+        // Traitement des ingrédients et des étapes de la recette
+        $recipe['ingredients'] = isset($recipe['ingredients']) ? implode(', ', $recipe['ingredients']) : 'Aucun ingrédient';
+
+        $steps = isset($recipe['steps']) && is_array($recipe['steps']) ? $recipe['steps'] : ['Aucune étape'];
+
+        // Récupérer les commentaires de l'API
         $comments = [];
         if (!empty($recipe['comments'])) {
             foreach ($recipe['comments'] as $commentUrl) {
@@ -54,11 +84,13 @@ final class RecipedetailsController extends AbstractController
             }
         }
 
-        // Passage des données à Twig
+        // Passage des données à Twig pour afficher la recette et les commentaires
         return $this->render('recipedetails/index.html.twig', [
             'recipe' => $recipe,
-            'steps' => $steps, // On passe les étapes correctement
+            'steps' => $steps,
             'comments' => $comments,
+            'userId' => $userId,
+            'userEmail' => $userEmail,
         ]);
     }
 }
