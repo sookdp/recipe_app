@@ -13,6 +13,87 @@
         {% endblock %}
     </head>
     <body>
+        {% if app.user %}
+            <!-- Barre de navigation responsive -->
+            <nav class="navbar navbar-expand-xl navbar-light bg-dark">
+                <div class="container-fluid">
+                    <!-- Logo à gauche -->
+                    <a class="navbar-brand fs-2 fw-bolder text-light" href="{{ path('app_main') }}">.Full Of Taste</a>
+
+                    <!-- Boutons en fonction de l'écran -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <!-- Accueil -->
+                            <li class="nav-item ms-4">
+                                <a class="nav-link text-light" href="{{ path('app_main') }}">Accueil</a>
+                            </li>
+
+                            <!-- Recettes -->
+                            <li class="nav-item ms-4">
+                                <a class="nav-link text-light" href="{{ path('app_recipes') }}">Recettes</a>
+                            </li>
+
+                            <!-- Favoris -->
+                            <li class="nav-item ms-4">
+                                <a class="nav-link text-light" href="{{ path('app_favorites') }}">Favoris</a>
+                            </li>
+
+                            <!-- Déconnexion -->
+                            <li class="nav-item ms-4">
+                                <a class="nav-link btn text-light btn-outline-dark" href="{{ path('app_logout') }}">Déconnexion</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endif %}
         {% block body %}{% endblock %}
+        <script>
+            // Ferme la navbar si un élément est cliqué
+            const navbarLinks = document.querySelectorAll('.navbar-nav .nav-link');
+            const navbarToggler = document.getElementById('navbarNav');
+
+            navbarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    // Vérifie si la navbar est visible et la ferme
+                    if (navbarToggler.classList.contains('show')) {
+                        const bsCollapse = new bootstrap.Collapse(navbarToggler, {
+                            toggle: false
+                        });
+                        bsCollapse.hide();
+                    }
+                });
+            });
+        </script>
     </body>
+    <style>
+        /* Effet de survol pour les liens de navigation */
+        .navbar-nav .nav-link {
+            transition: background-color 0.3s, color 0.3s; /* Transition douce pour les changements */
+            border-radius: 50px;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Fond semi-transparent au survol */
+            color: white; /* Texte blanc au survol */
+            border-radius: 50px; /* Coins arrondis */
+        }
+
+        /* Style spécifique pour le bouton Déconnexion */
+        .navbar-nav .btn-outline-dark {
+            background-color: white !important; /* Fond blanc permanent */
+            color: black !important; /* Texte noir permanent */
+            border-color: black; /* Bordure noire */
+        }
+
+        /* Effet de survol pour le bouton Déconnexion */
+        .navbar-nav .btn-outline-dark:hover {
+            background-color: rgba(255, 255, 255, 0.7); /* Fond blanc plus clair au survol */
+            color: black !important; /* Texte noir permanent */
+        }
+    </style>
 </html>

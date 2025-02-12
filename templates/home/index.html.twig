@@ -5,16 +5,17 @@
 {% block body %}
     <div class="container text-center">
         <!-- Image ronde juste au-dessus du titre -->
-        <img src="/assets/img/logo.png" class="rounded-circle mb-4" alt="Logo" style="width: 150px; height: 150px; object-fit: cover;">
+        <img src="{{ asset('build/img/fot-logo.png') }}" class="rounded-circle mb-4 w-25" alt="Logo">
 
-        <h1 class="display-4 text-primary mb-4">Bienvenue sur Mon Site de Recettes ! 🍽️</h1>
+        <h1 class="display-4 text-dark mb-4">Bienvenue sur Full of Taste ! 🍽️</h1>
         <p class="lead mb-4">Découvrez des recettes du monde entier, ajoutez vos favoris et partagez vos avis.</p>
+        <p class="lead mb-4">N'hésitez pas à nous envoyer des recommandations 😉</p>
 
         {% if not app.user %}
             <a href="{{ path('app_login') }}" class="btn btn-lg btn-outline-primary me-3">Se connecter</a>
             <a href="{{ path('app_register') }}" class="btn btn-lg btn-outline-secondary">Créer un compte</a>
         {% else %}
-            <a href="{{ path('app_login') }}" class="btn btn-lg btn-success">Voir les recettes</a>
+            <a href="{{ path('app_recipes') }}" class="btn btn-lg btn-success">Voir les recettes</a>
         {% endif %}
     </div>
 {% endblock %}

@@ -22,7 +22,7 @@ final class RecipesController extends AbstractController{
     public function index(): Response
     {
         // Appel de l'API Symfony
-        $response = $this->httpClient->request('GET', 'http://127.0.0.1:8002/api/recipes');
+        $response = $this->httpClient->request('GET', 'http://127.0.0.1:8001/api/recipes');
 
         $recipesData = $response->toArray();
 

@@ -72,6 +72,10 @@ Encore
     // uncomment if you're having problems with a jQuery plugin
     //.autoProvidejQuery()
     .enablePostCssLoader()
+    .copyFiles({
+        from: './assets/img', // Chemin source
+        to: 'img/[path][name].[ext]' // Destination dans public/build/
+    })
 
 ;
 

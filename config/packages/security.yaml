@@ -24,7 +24,7 @@ security:
             logout:
                 path: app_logout
                 # where to redirect after logout
-                # target: app_any_route
+                target: /
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -44,7 +44,9 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/recipes, roles: ROLE_USER }
+        - { path: ^/main, roles: ROLE_USER }
+        - { path: ^/favorites, roles: ROLE_USER }
 
 when@test:
     security:

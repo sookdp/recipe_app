@@ -26,15 +26,27 @@ Remplacer les valeurs des variables d'environnement dans le fichier `.env` par l
 DATABASE_URL="mysql://root:root123@127.0.0.1:3306/recipesdb?serverVersion=8.0.32&charset=utf8mb4"
 ```
 
-### 4. Modification du lien de l'API
+## 4. Modification du lien de l'API
 Remplacer le lien de l'API dans le fichier `src/Controller/RecipeController.php` par le votre.
-Il est recommandé d'utiliser le lien de l'API de l'application `recipes_api` et de le lancer en local.
+Il est recommandé d'utiliser le lien de l'API de l'application `recipes_api` et de le lancer en local (voir README de recipes_api).
 
 ```bash
 $response = $this->httpClient->request('GET', 'http://127.0.0.1:8002/api/recipes');
 ```
 
-## 5. Démarage du serveur
+## 5. Installation des dépendances
+
+```bash
+npm install
+```
+
+## 6. Installation des assets
+
+```bash
+npm run dev --watch
+```
+
+## 7. Démarage du serveur
 
 ```bash
 symfony serve
